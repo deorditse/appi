@@ -1,0 +1,5 @@
+vosk
+sounddevice
+pyaudio
+sqlite3
+requests
