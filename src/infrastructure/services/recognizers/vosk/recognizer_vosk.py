@@ -3,6 +3,9 @@ import sys
 import sounddevice as sd
 from vosk import Model, KaldiRecognizer
 
+print(sd.query_devices())
+print("Default samplerate:", sd.query_devices(kind='input')['default_samplerate'])
+
 # === Конфигурация ===
 MODEL_PATH = "src/infrastructure/services/recognizers/vosk/src/vosk-model-small-ru-0.22"  # папка с распакованной моделью
 TRIGGER_WORD = "appi"  # ключевое слово для активации
