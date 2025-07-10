@@ -9,7 +9,7 @@ print("Default samplerate:", sd.query_devices(kind='input')['default_samplerate'
 # === Конфигурация ===
 MODEL_PATH = "src/infrastructure/services/recognizers/vosk/src/vosk-model-small-ru-0.22"  # папка с распакованной моделью
 TRIGGER_WORD = "Вася"  # ключевое слово для активации
-SAMPLERATE = 44100
+SAMPLERATE = 16000
 DEVICE_INDEX = 2  # индекс USB микрофон
 # === Загрузка модели ===
 model = Model(MODEL_PATH)
