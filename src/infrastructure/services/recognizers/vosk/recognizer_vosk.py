@@ -1,0 +1,57 @@
+import queue
+import sys
+import sounddevice as sd
+from vosk import Model, KaldiRecognizer
+
+# === Конфигурация ===
+MODEL_PATH = "src/infrastructure/services/recognizers/vosk/src/vosk-model-small-ru-0.22"  # папка с распакованной моделью
+TRIGGER_WORD = "appi"  # ключевое слово для активации
+
+# === Загрузка модели ===
+model = Model(MODEL_PATH)
+recognizer = KaldiRecognizer(model, 16000)
+
+# === Очередь аудио ===
+q = queue.Queue()
+
+
+# === Аудио callback ===
+def callback(indata, frames, time, status):
+    if status:
+        print(status, file=sys.stderr)
+    q.put(bytes(indata))
+
+
+def main():
+    print(f"Голосовой ассистент запущен. Жду ключевое слово: '{TRIGGER_WORD}'")
+
+    triggered = False
+
+    # Открываем поток аудио
+    with sd.RawInputStream(samplerate=16000, blocksize=8000, dtype='int16',
+                           channels=1, callback=callback):
+        while True:
+            data = q.get()
+            if recognizer.AcceptWaveform(data):
+                result = recognizer.Result()
+                text = eval(result)["text"].lower()
+                print(f"Активация: '{text}'")
+                if not triggered:
+                    if TRIGGER_WORD in text:
+                        triggered = True
+                        print(f"Активация: '{TRIGGER_WORD}' обнаружено.")
+                        print("Начинаю слушать фразу...")
+                else:
+                    if text.strip():
+                        print(f"Распознано: {text}")
+                        print("Ассистент снова ждёт ключевое слово.")
+                        triggered = False
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\nАссистент остановлен пользователем.")
+    except Exception as e:
+        print(str(e))

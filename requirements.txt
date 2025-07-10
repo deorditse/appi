@@ -1,5 +1,5 @@
 vosk
-sounddevice
-pyaudio
-sqlite3
-requests
+sounddevice==0.4.6
+fastapi==0.110.2
+uvicorn==0.29.0
+requests==2.32.3
