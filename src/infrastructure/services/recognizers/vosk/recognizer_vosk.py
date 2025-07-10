@@ -9,10 +9,10 @@ print("Default samplerate:", sd.query_devices(kind='input')['default_samplerate'
 # === Конфигурация ===
 MODEL_PATH = "src/infrastructure/services/recognizers/vosk/src/vosk-model-small-ru-0.22"  # папка с распакованной моделью
 TRIGGER_WORD = "appi"  # ключевое слово для активации
-
+SAMPLERATE = 44100
 # === Загрузка модели ===
 model = Model(MODEL_PATH)
-recognizer = KaldiRecognizer(model, 16000)
+recognizer = KaldiRecognizer(model, SAMPLERATE)
 
 # === Очередь аудио ===
 q = queue.Queue()
@@ -31,7 +31,7 @@ def main():
     triggered = False
 
     # Открываем поток аудио
-    with sd.RawInputStream(samplerate=16000, blocksize=8000, dtype='int16',
+    with sd.RawInputStream(samplerate=SAMPLERATE, blocksize=8000, dtype='int16',
                            channels=1, callback=callback):
         while True:
             data = q.get()
