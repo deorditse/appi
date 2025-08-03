@@ -40,3 +40,6 @@ sudo apt update
 sudo apt install espeak python3-pyaudio -y
 pip install vosk sounddevice requests
 ```
+
+
+python3 src/infrastructure/services/recognizers/vosk/recognizer_vosk.py     

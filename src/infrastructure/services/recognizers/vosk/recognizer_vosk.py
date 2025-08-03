@@ -5,12 +5,25 @@ import json
 from vosk import Model, KaldiRecognizer
 
 # === Конфигурация ===
-MODEL_PATH = "src/infrastructure/services/recognizers/vosk/src/vosk-model-small-ru-0.22"
-TRIGGER_WORD = "вася"  # ключевое слово для активации, всегда в lower-case
+# MODEL_PATH = "src/infrastructure/services/recognizers/vosk/src/vosk-model-small-ru-0.22"
+MODEL_PATH = "src/infrastructure/services/recognizers/vosk/src/vosk-model-ru-0.42"
+TRIGGER_WORD = "Привет Вася"  # ключевое слово для активации, всегда в lower-case
+
+
+def get_input_device_index():
+    devices = sd.query_devices()
+    for idx, dev in enumerate(devices):
+        if dev['max_input_channels'] > 0:
+            print(f"✔️ Найдено входное устройство: {dev['name']} (index {idx})")
+            return idx
+    raise RuntimeError("❌ Нет доступного входного аудиоустройства.")
+
 
 # Настройки звука — подбираем автоматически
-DEVICE_INDEX = 2  # USB микрофон
-SAMPLERATE = int(sd.query_devices(DEVICE_INDEX, 'input')['default_samplerate'])
+DEVICE_INDEX = get_input_device_index()
+SAMPLERATE = int(sd.query_devices(DEVICE_INDEX)['default_samplerate'])
+
+print(sd.query_devices())
 
 # === Очередь аудио ===
 q = queue.Queue()
@@ -21,6 +34,7 @@ print(f"Input device index: {DEVICE_INDEX}, samplerate: {SAMPLERATE}")
 
 model = Model(MODEL_PATH)
 recognizer = KaldiRecognizer(model, SAMPLERATE)
+
 
 # === Аудио callback ===
 def callback(indata, frames, time, status):
@@ -35,12 +49,12 @@ def main():
     triggered = False
 
     with sd.RawInputStream(
-        samplerate=SAMPLERATE,
-        blocksize=8000,
-        dtype='int16',
-        channels=1,
-        device=DEVICE_INDEX,
-        callback=callback
+            samplerate=SAMPLERATE,
+            blocksize=8000,
+            dtype='int16',
+            channels=1,
+            device=DEVICE_INDEX,
+            callback=callback
     ):
         while True:
             data = q.get()
