@@ -1,0 +1,1 @@
+src/infrastructure/services/recognizers/vosk/src/vosk-model-ru-0.42 filter=lfs diff=lfs merge=lfs -text
