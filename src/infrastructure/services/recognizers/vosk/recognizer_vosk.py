@@ -6,7 +6,7 @@ from vosk import Model, KaldiRecognizer
 
 # === Конфигурация ===
 # MODEL_PATH = "src/infrastructure/services/recognizers/vosk/src/vosk-model-small-ru-0.22"
-MODEL_PATH = "src/infrastructure/services/recognizers/vosk/src/vosk-model-ru-0.42"
+MODEL_PATH = "src/infrastructure/services/recognizers/vosk/src/vosk-model-small-ru-0.22"
 TRIGGER_WORD = "Привет Вася"  # ключевое слово для активации, всегда в lower-case
 
 

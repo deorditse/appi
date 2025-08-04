@@ -42,4 +42,11 @@ pip install vosk sounddevice requests
 ```
 
 
-python3 src/infrastructure/services/recognizers/vosk/recognizer_vosk.py     
+python3 src/infrastructure/services/recognizers/vosk/recognizer_vosk.py   
+
+
+
+```commandline
+git lfs install
+git lfs track "src/infrastructure/services/recognizers/vosk/src/vosk-model-ru-0.42"
+```
