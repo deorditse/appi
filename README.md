@@ -50,3 +50,9 @@ python3 src/infrastructure/services/recognizers/vosk/recognizer_vosk.py
 git lfs install
 git lfs track "src/infrastructure/services/recognizers/vosk/src/vosk-model-ru-0.42"
 ```
+
+
+на сервере модель распознавания в
+root@orangepizero2w:/opt/appi/src/infrastructure/services/recognizers/vosk/src#  
+
+scp /Users/dmitrijdeordice/Downloads/vosk-model-ru-0.42.zip root@192.168.0.116:/opt/appi/src/infrastructure/services/recognizers/vosk/src/
