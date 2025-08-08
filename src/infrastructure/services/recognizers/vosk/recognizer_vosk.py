@@ -29,7 +29,7 @@ print(sd.query_devices())
 q = queue.Queue()
 
 # === Загрузка модели ===
-print(f"Используем модель:: {MODEL_PATH}")
+print(f"Используем модель: {MODEL_PATH}")
 print(f"Input device index: {DEVICE_INDEX}, samplerate: {SAMPLERATE}")
 
 model = Model(MODEL_PATH)
