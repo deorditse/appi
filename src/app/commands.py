@@ -3,8 +3,8 @@ import re
 from typing import Iterable
 
 # Списки команд
-STOP_COMMANDS = ["стоп", "останови", "выход", "заверши"]
-PAUSE_COMMANDS = ["пауза", "замри", "подожди"]
+START_COMMANDS = ["Шаня", "Привет Шаня", "Шанни", "Шань"]
+PAUSE_COMMANDS = ["пауза", "замри", "подожди", "стоп", "останови"]
 RESUME_COMMANDS = ["продолжи", "продолжить", "возобнови", "продолжай"]
 
 
@@ -24,13 +24,11 @@ def _any_word_in_text(text: str, words: Iterable[str]) -> bool:
     return False
 
 
-def is_stop(text: str) -> bool:
-    return _any_word_in_text(text, STOP_COMMANDS)
-
+def is_start(text: str) -> bool:
+    return _any_word_in_text(text, START_COMMANDS)
 
 def is_pause(text: str) -> bool:
     return _any_word_in_text(text, PAUSE_COMMANDS)
-
 
 def is_resume(text: str) -> bool:
     return _any_word_in_text(text, RESUME_COMMANDS)

@@ -139,4 +139,4 @@ dmypy.json
 .pyre/
 /.idea/
 
-src/infrastructure/services/recognizers/_vosk/src/vosk-model/
+src/infrastructure/services/voice_recognition/_vosk/src/vosk-model/

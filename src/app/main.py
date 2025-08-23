@@ -1,13 +1,13 @@
 from pathlib import Path
 
-from src.infrastructure.services.recognizers.recognizer_vosk import VoiceStreamRecognizer
+from src.infrastructure.services.voice_recognition.recognizer_vosk import VoiceStreamRecognizer
 import threading
-from commands import is_stop, is_pause, is_resume  # из блока выше
+from commands import is_pause, is_resume, is_start  # из блока выше
 
 
 def main():
     SRC_DIR = Path(__file__).resolve().parents[1]  # .../src
-    MODEL_DIR = SRC_DIR / "infrastructure/services/recognizers/vosk-model-small-ru-0.22"
+    MODEL_DIR = SRC_DIR / "infrastructure/services/voice_recognition/vosk-model-small-ru-0.22"
 
     # ВАЖНО: передаём str
     vr = VoiceStreamRecognizer(model_path=str(MODEL_DIR))
@@ -16,18 +16,16 @@ def main():
     def on_command(text: str):
         print(f"[Распознано] {text}")
 
-        if is_stop(text):
-            vr.stop()
-            stop_event.set()  # аккуратно выходим из main
-            return
+        if is_start(text):
+            print('is_start')
+            # return
 
         if is_pause(text):
-            vr.pause()
-            return
+            print('is_pause')
+            # return
 
         if is_resume(text):
-            vr.resume()
-            return
+            print('is_resume')
 
         # --- здесь ваша бизнес-логика ---
         # route_command(text)
