@@ -32,7 +32,7 @@ class VoiceRecording:
         channels: int = 1,
         blocksize: int = 2048,              # меньше блок → ниже латентность
         dtype: str = "int16",
-        silence_duration: float = 2.0,
+        silence_duration: float = 1.0,
         # Стартовые пороги (могут быть обновлены при auto_calibrate=True)
         voice_on_rms: float = 350.0,
         voice_off_rms: float = 250.0,
@@ -44,7 +44,7 @@ class VoiceRecording:
         device_index: Optional[int] = None,
         filename: str = "send_audio.wav",
         require_voice_first: bool = False,  # писать сразу, не ждать первой речи
-        debug_rms: bool = False,
+        debug_rms: bool = True,
     ):
         self.device_index = device_index
 
@@ -234,8 +234,8 @@ class VoiceRecording:
                 wf.writeframesraw(data)
 
                 rms = self._rms_int16(data)
-                if self.debug_rms:
-                    print(f"[RMS] {rms:.1f} (on={self.voice_on_rms:.1f}, off={self.voice_off_rms:.1f})")
+                # if self.debug_rms:
+                #     print(f"[RMS] {rms:.1f} (on={self.voice_on_rms:.1f}, off={self.voice_off_rms:.1f})")
 
                 if state == "waiting_voice":
                     if rms >= self.voice_on_rms:

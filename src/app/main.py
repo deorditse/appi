@@ -2,9 +2,12 @@ import time
 from pathlib import Path
 import threading
 
+from infrastructure.repositories.http.send import SendHttp
 from infrastructure.services.voice_recording.voice_recording import VoiceRecording
 from src.infrastructure.services.voice_recognition.voice_recognition import VoiceStreamRecognizer
 from commands import is_pause, is_resume, is_start  # ваши функции
+
+send_repository = SendHttp()
 
 
 def main():
@@ -21,8 +24,8 @@ def main():
     recording_active = threading.Event()
 
     def on_file_ready(path: Path):
-        print(f"[REC] Готов файл: {path} ({path.stat().st_size} байт)")
-        # TODO: отправка файла (HTTP/OpenAI/S3 и т.д.)
+
+        send_repository.send_audio_file(path)
 
         time.sleep(0.08)
         vr.pause(False)
