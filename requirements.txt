@@ -1,3 +1,6 @@
+certifi
+websockets
+simpleaudio
 python-dotenv
 openai
 numpy

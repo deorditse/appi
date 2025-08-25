@@ -25,7 +25,7 @@ def main():
 
     def on_file_ready(path: Path):
 
-        send_repository.send_audio_file(path)
+        send_repository.send_audio_file(path, samplerate=vr.samplerate)
 
         time.sleep(0.08)
         vr.pause(False)
