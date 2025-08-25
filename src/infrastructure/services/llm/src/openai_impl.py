@@ -29,7 +29,7 @@ class OpenAiLLMService(LLMService):
             path: Path,
             *,
             voice: str = "ash",
-            prompt: str = "Ответь на вопрос из переданного аудиофайла подробно и по сути.",
+            prompt: str = "answer strictly the questions from the transmitted audio file",
     ) -> AsyncIterator[bytes]:
         """Отправляет локальный аудиофайл целиком в Realtime API и стримит PCM16 чанки (bytes)."""
         if not path.exists():
