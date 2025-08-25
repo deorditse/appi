@@ -14,12 +14,12 @@ from infrastructure.utils.utils import api_key_openai
 from infrastructure.services.llm.llm import LLMService
 
 
-class OpenAiLLMService(LLMService, ABC):
+class OpenAiLLMService(LLMService):
     def __init__(
             self,
             system_message: Optional[str] = None,
             model: str = "gpt-5",
-    ) -> None:
+    ):
         super().__init__(system_message=system_message, model=model)
         self._client = OpenAI(api_key=api_key_openai())
         self._model = model
@@ -28,8 +28,8 @@ class OpenAiLLMService(LLMService, ABC):
             self,
             path: Path,
             *,
-            voice: str = "alloy",
-            prompt: str = "Ответь на вопрос из этого аудиофайла подробно и по сути.",
+            voice: str = "ash",
+            prompt: str = "Ответь на вопрос из переданного аудиофайла подробно и по сути.",
     ) -> AsyncIterator[bytes]:
         """Отправляет локальный аудиофайл целиком в Realtime API и стримит PCM16 чанки (bytes)."""
         if not path.exists():
@@ -54,7 +54,9 @@ class OpenAiLLMService(LLMService, ABC):
                     "instructions": self._system_message or prompt,
                     "voice": voice,
                     "output_audio_format": "pcm16",
-                    # "input_audio_format": "pcm16",
+                    "input_audio_format": "pcm16",
+                    "turn_detection": None,
+                    "input_audio_transcription": {"model": "whisper-1", "language": "ru"}
                 }
             }))
 
@@ -66,22 +68,28 @@ class OpenAiLLMService(LLMService, ABC):
             # 2) запрос ответа (разрешены только ["text"] или ["audio","text"])
             await ws.send(json.dumps({
                 "type": "response.create",
-                "response": {"modalities": ["audio", "text"]}
+                "response": {
+                    "modalities": ["audio", "text"]
+                }
             }))
 
             # 3) читаем события с логом
             async for raw in ws:
                 evt = json.loads(raw)
                 et = evt.get("type")
-                # --- ВКЛЮЧИТЕ ЛОГ НА ПЕРВЫЕ ТЕСТЫ ---
                 print("EVENT:", et, {k: v for k, v in evt.items() if k not in ("audio", "delta")})
+
                 if et == "response.audio.delta":
-                    yield base64.b64decode(evt["audio"])  # PCM16 mono 24 kHz
-                elif et in ("response.audio.done", "response.done"):
+                    b64 = evt.get("audio") or evt.get("delta") or evt.get("chunk")
+                    if not b64:
+                        continue
+                    yield base64.b64decode(b64)
+                elif et == "response.audio.done":
                     break
-                elif et == "response.delta":
-                    # при желании соберите текст
-                    pass
+                elif et == "response.done":
+                    if evt.get("response", {}).get("status") == "cancelled":
+                        continue
+
                 elif et == "error":
                     raise RuntimeError(f"Realtime error: {evt}")
 
